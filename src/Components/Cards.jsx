@@ -2,9 +2,8 @@ import React from "react";
 
 const Cards = ({ img, title, description, link }) => {
   return (
-    // <div className="forall w-full h-50vh flex items-center justify-center bg-amber-100">
-    <div className="w-[300px] h-[400px] bg-gray-800/50 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden group transition duration-300 hover:scale-105 hover:shadow-[0_0_25px_rgba(34,197,94,0.3)]">
-      
+    <div className="w-full sm:w-[300px] h-[400px] bg-gray-800/50 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden group transition duration-300 hover:scale-105 hover:shadow-[0_0_25px_rgba(34,197,94,0.3)]">
+
       <div className="w-full h-1/2 overflow-hidden">
         <img
           src={img}
@@ -30,7 +29,6 @@ const Cards = ({ img, title, description, link }) => {
         </a>
       </div>
     </div>
-    // </div>
   );
 };
 
