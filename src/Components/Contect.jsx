@@ -1,7 +1,47 @@
-import { Github, Linkedin, Mail, Phone, Twitter } from "lucide-react";
-import React from "react";
+import { Github, Linkedin, Mail, Phone, Twitter, CheckCircle2, Loader2 } from "lucide-react";
+import React, { useState } from "react";
 
 const Contect = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: ""
+  });
+  const [status, setStatus] = useState("idle"); // idle, loading, success, error
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus("loading");
+
+    // Replace this URL with your actual Sheet Monkey Form Action URL
+    const scriptURL = "https://api.sheetmonkey.io/form/YOUR_SHEET_MONKEY_URL_HERE";
+
+    try {
+      const response = await fetch(scriptURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setStatus("success");
+        setFormData({ name: "", email: "", message: "" });
+      } else {
+        setStatus("error");
+      }
+    } catch (error) {
+      console.error('Error!', error.message);
+      setStatus("error");
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
   return (
     // ✅ MAIN WRAPPER — full screen, no overflow issues
     <div className="relative min-h-screen w-full flex items-center justify-center px-4 py-12 text-white overflow-hidden">
@@ -34,30 +74,77 @@ const Contect = () => {
 
             {/* LEFT — FORM */}
             <div className="w-full md:w-1/2 flex flex-col gap-3">
-              <label className="text-sm font-medium">Name</label>
-              <input
-                type="text"
-                className="w-full bg-gray-700/50 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-green-500/50 transition-colors"
-                placeholder="Your Name"
-              />
+              {status === "success" ? (
+                <div className="flex flex-col items-center justify-center py-10 gap-4 text-center">
+                  <CheckCircle2 className="w-16 h-16 text-green-500 animate-bounce" />
+                  <h2 className="text-2xl font-bold">thankyou for your rispond</h2>
+                  <p className="text-gray-400">Your message has been successfully sent to my Google Sheet.</p>
+                  <button
+                    onClick={() => setStatus("idle")}
+                    className="text-green-400 hover:underline mt-4"
+                  >
+                    Send another message
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-2">
+                    <label className="text-sm font-medium">Name</label>
+                    <input
+                      type="text"
+                      name="name"
+                      required
+                      value={formData.name}
+                      onChange={handleChange}
+                      className="w-full bg-gray-700/50 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-green-500/50 transition-colors"
+                      placeholder="Your Name"
+                    />
+                  </div>
 
-              <label className="text-sm font-medium">Email</label>
-              <input
-                type="email"
-                className="w-full bg-gray-700/50 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-green-500/50 transition-colors"
-                placeholder="your@email.com"
-              />
+                  <div className="flex flex-col gap-2">
+                    <label className="text-sm font-medium">Email</label>
+                    <input
+                      type="email"
+                      name="email"
+                      required
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="w-full bg-gray-700/50 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-green-500/50 transition-colors"
+                      placeholder="your@email.com"
+                    />
+                  </div>
 
-              <label className="text-sm font-medium">Message</label>
-              <textarea
-                className="w-full bg-gray-700/50 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-green-500/50 transition-colors"
-                rows="4"
-                placeholder="Tell me about your project..."
-              />
+                  <div className="flex flex-col gap-2">
+                    <label className="text-sm font-medium">Message</label>
+                    <textarea
+                      name="message"
+                      required
+                      value={formData.message}
+                      onChange={handleChange}
+                      className="w-full bg-gray-700/50 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-green-500/50 transition-colors"
+                      rows="4"
+                      placeholder="Tell me about your project..."
+                    />
+                  </div>
 
-              <button className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg mt-4 transition-all duration-300 hover:shadow-[0_0_20px_rgba(34,197,94,0.35)]">
-                Send Message
-              </button>
+                  <button
+                    disabled={status === "loading"}
+                    className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg mt-4 transition-all duration-300 hover:shadow-[0_0_20px_rgba(34,197,94,0.35)] flex items-center justify-center gap-2"
+                  >
+                    {status === "loading" ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      "Send Message"
+                    )}
+                  </button>
+                  {status === "error" && (
+                    <p className="text-red-400 text-sm text-center">Something went wrong. Please try again.</p>
+                  )}
+                </form>
+              )}
             </div>
 
             {/* RIGHT — INFO */}
