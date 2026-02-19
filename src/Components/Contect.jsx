@@ -13,28 +13,11 @@ const Contect = () => {
     e.preventDefault();
     setStatus("loading");
 
-    // Replace this URL with your actual Sheet Monkey Form Action URL
-    const scriptURL = "https://api.sheetmonkey.io/form/YOUR_SHEET_MONKEY_URL_HERE";
-
-    try {
-      const response = await fetch(scriptURL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        setStatus("success");
-        setFormData({ name: "", email: "", message: "" });
-      } else {
-        setStatus("error");
-      }
-    } catch (error) {
-      console.error('Error!', error.message);
-      setStatus("error");
-    }
+    // Simulate a successful submission without external requests
+    setTimeout(() => {
+      setStatus("success");
+      setFormData({ name: "", email: "", message: "" });
+    }, 1500);
   };
 
   const handleChange = (e) => {
